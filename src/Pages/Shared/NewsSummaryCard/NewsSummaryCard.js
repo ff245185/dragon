@@ -32,7 +32,7 @@ const NewsSummaryCard = ({ news }) => {
                 <Card.Img variant="top" src={image_url} />
                 <Card.Text>
                     {
-                        details.length > 250 ?
+                        details?.length > 250 ?
                             <p>{details.slice(0, 250) + '...'} <Link to={`/news/${_id}`}>Read More</Link> </p>
                             :
                             <p>{details}</p>

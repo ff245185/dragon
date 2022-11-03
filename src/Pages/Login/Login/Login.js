@@ -1,15 +1,19 @@
-import React, { useContext } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
+import React, { useContext, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../../contexts/AuthProvider/AuthProvider';
 
 
 const Login = () => {
-
+ const [error, setError] = useState('')
     const {signIn} = useContext(AuthContext);
     const navigate = useNavigate();
+     const location = useLocation();
 
+        const from = location.state?.from?.pathname  || '/';
+              
     const handleSubmit = event =>{
         event.preventDefault();
         const form = event.target;
@@ -19,11 +23,19 @@ const Login = () => {
         .then(result => {
             const user = result.user;
             console.log(user);
+            setError('');
             form.reset();
-            navigate('/')
+           if (user.emailVerified) {
+            navigate(from , {replace: true});
+           }
+           else{
+            toast.error('you can fuck all')
+           }
         })
-        .catch(error => console.error(error))
-    }
+        .catch(error => 
+            {console.error(error)
+                setError(error.message)}
+            )}
 
     return (
         <Form onSubmit={handleSubmit}>
@@ -42,7 +54,7 @@ const Login = () => {
                 Login
             </Button>
             <Form.Text className="text-danger">
-                
+                {error}
             </Form.Text>
         </Form>
     );

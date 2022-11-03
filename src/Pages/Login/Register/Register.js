@@ -1,11 +1,12 @@
 import React, { useContext } from 'react';
+import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { AuthContext } from '../../../contexts/AuthProvider/AuthProvider';
 
 const Register = () => {
-
-    const {createUser} = useContext(AuthContext);
+        const [error, setError,] = useState('');
+    const {createUser,verifyEmail} = useContext(AuthContext);
 
     const handleSubmit = event => {
         event.preventDefault();
@@ -19,10 +20,20 @@ const Register = () => {
         createUser(email, password)
         .then( result => {
             const user = result.user;
+            setError('');
             console.log(user);
             form.reset();
+            handleEmailVeryfitation();
         })
-        .catch( e => console.error(e));
+        .catch( e => {console.error(e)
+        setError(e.message)
+    });
+    }
+
+    const handleEmailVeryfitation = () =>{
+        verifyEmail()
+        .then(()=>{})
+        .catch(()=>{console.error(error);})
     }
 
     return (
@@ -50,7 +61,7 @@ const Register = () => {
                 Register
             </Button>
             <Form.Text className="text-danger">
-
+                 {error}
             </Form.Text>
         </Form>
     );
